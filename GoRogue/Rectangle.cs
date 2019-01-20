@@ -2,6 +2,7 @@
 using GoRogue.Random;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Troschuetz.Random;
 
 namespace GoRogue
@@ -11,11 +12,33 @@ namespace GoRogue
 	/// </summary>
 	public struct Rectangle : IEquatable<Rectangle>
 	{
+		#region Fields
 		/// <summary>
 		/// The empty rectangle. Has origin of (0, 0) with 0 width and height.
 		/// </summary>
 		public static readonly Rectangle EMPTY = new Rectangle(0, 0, 0, 0);
 
+		
+		/// <summary>
+		/// X-coordinate of position of the rectangle.
+		/// </summary>
+		public readonly int X;
+		/// <summary>
+		/// Y-coordinate of position of the rectangle.
+		/// </summary>
+		public readonly int Y;
+
+		/// <summary>
+		/// The width of the rectangle.
+		/// </summary>
+		public readonly int Width;
+
+		/// <summary>
+		/// The height of the rectangle.
+		/// </summary>
+		public readonly int Height;
+		#endregion
+		
 		/// <summary>
 		/// Constructor. Takes the minimum x and y values of the rectangle, along with the width and height.
 		/// </summary>
@@ -75,11 +98,6 @@ namespace GoRogue
 		{
 			get => Coord.Get(X + (Width / 2), Y + (Height / 2));
 		}
-
-		/// <summary>
-		/// The height of the rectangle.
-		/// </summary>
-		public int Height { get; private set; }
 
 		/// <summary>
 		/// Whether or not this rectangle is empty (has width and height of 0).
@@ -145,21 +163,6 @@ namespace GoRogue
 		/// Returns a coordinate (Width, Height), which represents the size of the rectangle.
 		/// </summary>
 		public Coord Size { get => Coord.Get(Width, Height); }
-
-		/// <summary>
-		/// The width of the rectangle.
-		/// </summary>
-		public int Width { get; private set; }
-
-		/// <summary>
-		/// X-coordinate of position of the rectangle.
-		/// </summary>
-		public int X { get; private set; }
-
-		/// <summary>
-		/// Y-coordinate of position of the rectangle.
-		/// </summary>
-		public int Y { get; private set; }
 
 		/// <summary>
 		/// Creates a rectangle with the given minimum and maximum extents. Effectively a
@@ -750,5 +753,13 @@ namespace GoRogue
 		/// <returns>A new rectangle, whose y-position has been moved by the given delta-y value.</returns>
 		public Rectangle TranslateY(int dy)
 			=> new Rectangle(X, Y + dy, Width, Height);
+
+		#region MonoGame Conversions
+		public static implicit operator Microsoft.Xna.Framework.Rectangle(Rectangle r)
+			=> new Microsoft.Xna.Framework.Rectangle(r.X, r.Y, r.Width, r.Height);
+
+		public static implicit operator Rectangle(Microsoft.Xna.Framework.Rectangle r)
+			=> new Rectangle(r.X, r.Y, r.Width, r.Height);
+		#endregion
 	}
 }
